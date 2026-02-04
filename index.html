@@ -132,12 +132,13 @@
   
     .bg-heart {
       position: absolute;
-      width: 18px;
-      height: 18px;
-      background: rgba(214, 51, 108, 0.25);
-      transform: rotate(45deg) scale(0.6);
+      width: 16px;
+      height: 16px;
+      background: rgba(214, 51, 108, 0.35);
+      transform: rotate(45deg) scale(0.5);
       pointer-events: none;
       animation: pop 1.2s ease-out forwards;
+      z-index: 0;
     }
 
     .bg-heart::before,
@@ -154,7 +155,10 @@
     .bg-heart::after { left: -9px; top: 0; }
 
     @keyframes pop {
-      0% { opacity: 0.5; transform: rotate(45deg) scale(0.6); }
+      0% { opacity: 0.6; transform: rotate(45deg) scale(0.5); }
+      60% { opacity: 0.4; transform: rotate(45deg) scale(1.4); }
+      100% { opacity: 0; transform: rotate(45deg) scale(2); }
+    }
       60% { opacity: 0.35; transform: rotate(45deg) scale(1.4); }
       100% { opacity: 0; transform: rotate(45deg) scale(2); }
     }
@@ -186,6 +190,7 @@
 
   <script>
     const yesBtn = document.getElementById('yesBtn');
+    const card = document.querySelector('.card');
     const noBtn = document.getElementById('noBtn');
     const response = document.getElementById('response');
 
@@ -210,6 +215,33 @@
 
       setTimeout(() => heart.remove(), 1200);
     });
+  
+
+    function spawnHeart(x, y) {
+      const heart = document.createElement('div');
+      heart.className = 'bg-heart';
+      heart.style.left = x - 8 + 'px';
+      heart.style.top = y - 8 + 'px';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 1200);
+    }
+
+    // Desktop
+    document.addEventListener('mousemove', (e) => {
+      spawnHeart(e.clientX, e.clientY);
+    });
+
+    // Mobile (touch)
+    document.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      if (touch) spawnHeart(touch.clientX, touch.clientY);
+    });
+
+    document.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      if (touch) spawnHeart(touch.clientX, touch.clientY);
+    });
+  </script>
 
 </body>
 </html>
