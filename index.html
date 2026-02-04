@@ -175,69 +175,99 @@
     <div id="response">Test Text</div>
   </div>
 
-  <script>
-    const unlockTime = new Date(2026, 1, 4, 1, 4, 0); // CHANGE THIS
+<script>
+  // ===== CONFIG =====
+  const unlockTime = new Date(2026, 1, 4, 1, 8, 0); // REAL unlock time
+  const WAIT_SECONDS = 30; // delay after unlock
+  // ==================
 
-    const lockCard = document.getElementById('lockCard');
-    const mainCard = document.getElementById('mainCard');
-    const countdownEl = document.getElementById('countdown');
-    const yesBtn = document.getElementById('yesBtn');
-    const noBtn = document.getElementById('noBtn');
-    const response = document.getElementById('response');
+  const lockCard = document.getElementById('lockCard');
+  const mainCard = document.getElementById('mainCard');
+  const countdownEl = document.getElementById('countdown');
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const response = document.getElementById('response');
 
-    function updateCountdown(ms) {
-      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-      const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-      const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-      const secs = String(totalSeconds % 60).padStart(2, '0');
-      countdownEl.textContent = `${hrs}:${mins}:${secs}`;
-    }
+  let countdownStarted = false;
+  let remaining = WAIT_SECONDS;
 
-    function checkUnlock() {
-      const now = new Date().getTime();
-      const diff = unlockTime.getTime() - now;
+  function formatTime(seconds) {
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
+  }
 
-      if (diff <= 0) {
-        document.body.classList.remove('locked');
-        document.body.classList.add('unlocked');
-        lockCard.style.display = 'none';
-        mainCard.style.display = 'block';
-      } else {
-        updateCountdown(diff);
+  function unlockPage() {
+    document.body.classList.remove('locked');
+    document.body.classList.add('unlocked');
+    lockCard.style.display = 'none';
+    mainCard.style.display = 'block';
+  }
+
+  function startCountdown() {
+    if (countdownStarted) return;
+    countdownStarted = true;
+
+    countdownEl.textContent = formatTime(remaining);
+
+    const timer = setInterval(() => {
+      remaining--;
+      countdownEl.textContent = formatTime(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(timer);
+        unlockPage();
       }
+    }, 1000);
+  }
+
+  function checkState() {
+    const now = new Date().getTime();
+
+    if (now < unlockTime.getTime()) {
+      // Phase 1: fully locked
+      countdownEl.textContent = '--:--:--';
+      return;
     }
 
-    checkUnlock();
-    setInterval(checkUnlock, 1000);
+    // Phase 2: date passed, start countdown
+    startCountdown();
+  }
 
-    yesBtn.addEventListener('click', () => {
-      response.style.display = 'block';
-      yesBtn.disabled = true;
-      noBtn.style.display = 'none';
-    });
+  // initial + continuous check
+  checkState();
+  setInterval(checkState, 1000);
 
-    noBtn.addEventListener('mouseover', () => {
-      const x = Math.random() * 200 - 100;
-      const y = Math.random() * 200 - 100;
-      noBtn.style.transform = `translate(${x}px, ${y}px)`;
-    });
+  yesBtn.addEventListener('click', () => {
+    response.style.display = 'block';
+    yesBtn.disabled = true;
+    noBtn.style.display = 'none';
+  });
 
-    function spawnHeart(x, y) {
-      if (!document.body.classList.contains('unlocked')) return;
-      const heart = document.createElement('div');
-      heart.className = 'bg-heart';
-      heart.style.left = x - 8 + 'px';
-      heart.style.top = y - 8 + 'px';
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 1200);
-    }
+  noBtn.addEventListener('mouseover', () => {
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 200 - 100;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+  });
 
-    document.addEventListener('mousemove', e => spawnHeart(e.clientX, e.clientY));
-    document.addEventListener('touchstart', e => {
-      const t = e.touches[0];
-      if (t) spawnHeart(t.clientX, t.clientY);
-    });
-  </script>
+  function spawnHeart(x, y) {
+    if (!document.body.classList.contains('unlocked')) return;
+    const heart = document.createElement('div');
+    heart.className = 'bg-heart';
+    heart.style.left = x - 8 + 'px';
+    heart.style.top = y - 8 + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1200);
+  }
+
+  document.addEventListener('mousemove', e => spawnHeart(e.clientX, e.clientY));
+  document.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    if (t) spawnHeart(t.clientX, t.clientY);
+  });
+</script>
+
 
 </body>
 </html>
