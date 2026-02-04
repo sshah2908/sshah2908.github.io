@@ -242,15 +242,29 @@
       setTimeout(() => heart.remove(), 1200);
     }
 
-        // Unlock logic (set date & time)
-    const unlockTime = new Date(2026, 1, 4, 0, 48, 0);
-// year, month (0 = Jan), day, hour, minute, second
+const unlockTime = new Date(2026, 1, 4, 0, 48, 0); // Feb 4, 00:48 local time
 
+function checkUnlock() {
+  const now = new Date();
 
-    if (new Date() >= unlockTime) {
-      lockCard.style.display = 'none';
-      mainCard.style.display = 'block';
-    }
+  console.log('Now:', now.toString());
+  console.log('Unlock:', unlockTime.toString());
+
+  if (now.getTime() >= unlockTime.getTime()) {
+    lockCard.style.display = 'none';
+    mainCard.style.display = 'block';
+  } else {
+    lockCard.style.display = 'block';
+    mainCard.style.display = 'none';
+  }
+}
+
+// run immediately
+checkUnlock();
+
+// re-check every second (IMPORTANT)
+setInterval(checkUnlock, 1000);
+
 
     // Desktop
     document.addEventListener('mousemove', (e) => {
