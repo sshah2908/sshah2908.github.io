@@ -20,6 +20,7 @@
       align-items: center;
       justify-content: center;
       color: #333;
+      overflow: hidden;
     }
 
     .card {
@@ -128,6 +129,35 @@
       100% { transform: translateY(0) rotate(45deg); }
     }
 
+  
+    .bg-heart {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: rgba(214, 51, 108, 0.25);
+      transform: rotate(45deg) scale(0.6);
+      pointer-events: none;
+      animation: pop 1.2s ease-out forwards;
+    }
+
+    .bg-heart::before,
+    .bg-heart::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: rgba(214, 51, 108, 0.25);
+      border-radius: 50%;
+    }
+
+    .bg-heart::before { top: -9px; left: 0; }
+    .bg-heart::after { left: -9px; top: 0; }
+
+    @keyframes pop {
+      0% { opacity: 0.5; transform: rotate(45deg) scale(0.6); }
+      60% { opacity: 0.35; transform: rotate(45deg) scale(1.4); }
+      100% { opacity: 0; transform: rotate(45deg) scale(2); }
+    }
   </style>
 </head>
 <body>
@@ -136,7 +166,8 @@
     <div class="badge">⚠️ Important Question</div>
     <h1>So… I was wondering</h1>
     <p>
-      Test text
+      I think you’re amazing, and I’d really love to take you out sometime.
+      No pressure, just good vibes, laughs, and maybe food 👀🍕
     </p>
 
     <div class="buttons">
@@ -144,7 +175,7 @@
       <button id="noBtn">No 🙃</button>
     </div>
 
-    <div id="response">Test text</div>
+    <div id="response">LET’S GO 😭💗 I’ll message you!</div>
 
     <!-- floating hearts -->
     <div class="heart" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
@@ -169,7 +200,16 @@
       const y = Math.random() * 200 - 100;
       noBtn.style.transform = `translate(${x}px, ${y}px)`;
     });
-  </script>
+  
+    document.addEventListener('mousemove', (e) => {
+      const heart = document.createElement('div');
+      heart.className = 'bg-heart';
+      heart.style.left = e.clientX + 'px';
+      heart.style.top = e.clientY + 'px';
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 1200);
+    });
 
 </body>
 </html>
