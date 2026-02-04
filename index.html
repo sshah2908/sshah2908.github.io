@@ -166,7 +166,22 @@
 </head>
 <body>
 
-  <div class="card">
+  <!-- LOCK SCREEN -->
+  <div class="card" id="lockCard">
+    <div class="badge">🤫 Not yet</div>
+    <h1>Hey you 👀</h1>
+    <p>
+      You’ve unlocked this a *bit* early.
+      I promise this will make sense soon —
+      just not yet 😭
+    </p>
+    <p style="font-size:0.9rem; opacity:0.8;">
+      Come back when I tell you to.
+    </p>
+  </div>
+
+  <!-- MAIN CARD -->
+  <div class="card" id="mainCard" style="display:none;">
     <div class="badge">⚠️ Important Question</div>
     <h1>So… I was wondering</h1>
     <p>
@@ -189,6 +204,8 @@
 
   <script>
     const yesBtn = document.getElementById('yesBtn');
+    const lockCard = document.getElementById('lockCard');
+    const mainCard = document.getElementById('mainCard');
     const card = document.querySelector('.card');
     const noBtn = document.getElementById('noBtn');
     const response = document.getElementById('response');
@@ -225,6 +242,14 @@
       setTimeout(() => heart.remove(), 1200);
     }
 
+        // Unlock logic (set date & time)
+    const unlockTime = new Date('2026-02-14T18:00:00'); // CHANGE THIS
+
+    if (new Date() >= unlockTime) {
+      lockCard.style.display = 'none';
+      mainCard.style.display = 'block';
+    }
+
     // Desktop
     document.addEventListener('mousemove', (e) => {
       spawnHeart(e.clientX, e.clientY);
@@ -240,7 +265,8 @@
       const touch = e.touches[0];
       if (touch) spawnHeart(touch.clientX, touch.clientY);
     });
-  </script>
+  
+
 
 </body>
 </html>
