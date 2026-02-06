@@ -43,12 +43,18 @@
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.15);
       z-index: 1;
+      opacity: 0;
+      transform: translateY(20px) scale(0.98);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
 
     .card p {
       margin: 0 auto;
     }
-
+    .card.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
     .badge {
       display: inline-block;
       background: #eee;
@@ -206,6 +212,8 @@
 
   const lockCard = document.getElementById('lockCard');
   const mainCard = document.getElementById('mainCard');
+  lockCard.classList.add('show');
+  
   const countdownEl = document.getElementById('countdown');
   const yesBtn = document.getElementById('yesBtn');
   const noBtn = document.getElementById('noBtn');
@@ -226,6 +234,10 @@
     document.body.classList.add('unlocked');
     lockCard.style.display = 'none';
     mainCard.style.display = 'block';
+  // trigger animation on next frame
+  requestAnimationFrame(() => {
+    mainCard.classList.add('show');
+  });
   }
 
   function startCountdown() {
