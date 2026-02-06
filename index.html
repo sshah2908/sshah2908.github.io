@@ -185,7 +185,6 @@
         align-items: flex-start; /* 👈 prevents squishing */
       }
     }
-    }
   </style>
 </head>
 <body class="locked">
@@ -246,13 +245,17 @@
   function unlockPage() {
     document.body.classList.remove('locked');
     document.body.classList.add('unlocked');
+  
     lockCard.style.display = 'none';
     mainCard.style.display = 'block';
-  // trigger animation on next frame
-  requestAnimationFrame(() => {
+  
+    // FORCE browser to register the layout change
+    mainCard.offsetHeight;
+  
+    // NOW animate
     mainCard.classList.add('show');
-  });
   }
+
 
   function startCountdown() {
     if (countdownStarted) return;
