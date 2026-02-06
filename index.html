@@ -19,6 +19,7 @@
       align-items: center;
       justify-content: center;
       transition: background 0.6s ease;
+      overflow-y: auto;
     }
 
     body.locked {
@@ -150,6 +151,17 @@
       0% { opacity: 0.6; transform: rotate(45deg) scale(0.5); }
       60% { opacity: 0.4; transform: rotate(45deg) scale(1.4); }
       100% { opacity: 0; transform: rotate(45deg) scale(2); }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 2rem 1.5rem;
+      }
+    
+      .container {
+        padding: 1.5rem 1rem;
+        align-items: flex-start; /* 👈 prevents squishing */
+      }
+    }
     }
   </style>
 </head>
