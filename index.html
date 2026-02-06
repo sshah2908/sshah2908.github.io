@@ -43,21 +43,32 @@
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.15);
       z-index: 1;
+    
       opacity: 0;
       transform: translateY(12px) scale(0.99);
-
-      transition: opacity 1.6s ease, transform 1.6s ease;
-
+      visibility: hidden;
+    
+      transition:
+        opacity 1.3s ease,
+        transform 1.3s ease,
+        visibility 0s linear 1.3s;
     }
+    
+    .card.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      visibility: visible;
+    
+      transition-delay: 0s;
+    }
+
 
     .card p {
       margin: 0 auto;
       max-width: 560px;
     }
-    .card.show {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+
+    
     .badge {
       display: inline-block;
       background: #eee;
