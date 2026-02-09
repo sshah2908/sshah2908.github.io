@@ -220,56 +220,90 @@
 <script>
   // ===== CONFIG =====
 
-const unlockTime = new Date("2026-02-04T06:50:00Z");
+  const unlockTime = new Date("2026-02-04T06:50:00Z");
 
-const lockCard = document.getElementById('lockCard');
-const mainCard = document.getElementById('mainCard');
-const countdownEl = document.getElementById('countdown');
-const yesBtn = document.getElementById('yesBtn');
-const noBtn = document.getElementById('noBtn');
-const response = document.getElementById('response');
+  const WAIT_SECONDS = 1; // delay after unlock
+  // ==================
 
-// Update the countdown timer
-function updateCountdown(ms) {
-  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-  const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-  const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-  const secs = String(totalSeconds % 60).padStart(2, '0');
-  countdownEl.textContent = `${hrs}:${mins}:${secs}`; // fixed template literal
-}
+  const lockCard = document.getElementById('lockCard');
+  const mainCard = document.getElementById('mainCard');
+  lockCard.classList.add('show');
+  
+  const countdownEl = document.getElementById('countdown');
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const response = document.getElementById('response');
 
-// Check if the unlock time has passed
-function checkUnlock() {
-  const now = new Date().getTime();
-  const diff = unlockTime.getTime() - now;
+  let countdownStarted = false;
+  let remaining = WAIT_SECONDS;
 
-  if (diff <= 0) {
+  function formatTime(seconds) {
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
+  }
+
+  function unlockPage() {
     document.body.classList.remove('locked');
     document.body.classList.add('unlocked');
+  
     lockCard.style.display = 'none';
     mainCard.style.display = 'block';
-  } else {
-    updateCountdown(diff);
+  
+    // FORCE browser to register the layout change
+    mainCard.offsetHeight;
+  
+    // NOW animate
+    mainCard.classList.add('show');
   }
-}
 
-checkUnlock();
-setInterval(checkUnlock, 1000);
 
-// Yes button click
-yesBtn.addEventListener('click', () => {
-  response.style.display = 'block';
-  yesBtn.disabled = true;
-  noBtn.style.display = 'none';
-});
+  function startCountdown() {
+    if (countdownStarted) return;
+    countdownStarted = true;
 
-// No button hover (fixed transform template literal)
-noBtn.addEventListener('mouseover', () => {
-  const x = Math.random() * 200 - 100; // random offset -100 to 100
-  const y = Math.random() * 200 - 100;
-  noBtn.style.transform = `translate(${x}px, ${y}px)`; // added backticks
-});
+    countdownEl.textContent = formatTime(remaining);
 
+    const timer = setInterval(() => {
+      remaining--;
+      countdownEl.textContent = formatTime(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(timer);
+        unlockPage();
+      }
+    }, 1000);
+  }
+
+  function checkState() {
+    const now = new Date().getTime();
+
+    if (now < unlockTime.getTime()) {
+      // Phase 1: fully locked
+      countdownEl.textContent = '--:--:--';
+      return;
+    }
+
+    // Phase 2: date passed, start countdown
+    startCountdown();
+  }
+
+  // initial + continuous check
+  checkState();
+  setInterval(checkState, 1000);
+
+  yesBtn.addEventListener('click', () => {
+    response.style.display = 'block';
+    yesBtn.disabled = true;
+    noBtn.style.display = 'none';
+  });
+
+  noBtn.addEventListener('mouseover', () => {
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 200 - 100;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+  });
 
   function spawnHeart(x, y) {
     if (!document.body.classList.contains('unlocked')) return;
