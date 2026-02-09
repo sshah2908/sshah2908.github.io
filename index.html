@@ -214,12 +214,14 @@
       <button id="noBtn">No</button>
     </div>
 
-    <div id="response">hehehheeh okay now message me fatty</div>
+    <div id="response">hehehheeh okay now message meee</div>
   </div>
 
 <script>
   // ===== CONFIG =====
   const unlockTime = new Date(2026, 1, 4, 1, 8, 0); // REAL unlock time
+  //const unlockTime = new Date("2026-02-04T06:50:00Z");
+
   const WAIT_SECONDS = 1; // delay after unlock
   // ==================
 
@@ -319,6 +321,36 @@
     if (t) spawnHeart(t.clientX, t.clientY);
   });
 </script>
+<script>
+  const FORM_ENDPOINT = "https://formspree.io/f/mreabkag";
+
+  function notify(eventName) {
+    fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Accept": "application/json" },
+      body: JSON.stringify({
+        event: eventName,
+        page: window.location.href,
+        time: new Date().toISOString(),
+        device: /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Desktop"
+      })
+    });
+  }
+
+  // Decide which notification to send
+  const unlockTime = new Date("2026-02-04T06:50:00Z"); // SAME unlockTime you're already using
+  const now = new Date();
+
+  // Small delay so it only fires once page is actually loaded
+  setTimeout(() => {
+    if (now < unlockTime) {
+      notify("LOCKED PAGE OPENED 👀");
+    } else {
+      notify("UNLOCKED PAGE OPENED ❤️");
+    }
+  }, 1500);
+</script>
+
 
 
 </body>
